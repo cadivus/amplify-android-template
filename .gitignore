@@ -1,0 +1,21 @@
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code
+.vscode/
+
+# node_modules
+node_modules/
+
+# build artifacts
+build/
+dist/
+.expo/
+
+# amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*

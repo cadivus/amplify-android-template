@@ -1,0 +1,44 @@
+name: AndroidAmplify CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+    
+    - name: Grant execute permission for gradlew
+      working-directory: ./amplify-android
+      run: chmod +x gradlew
+
+    # Add code to set the Amplify configuration
+    # or the builds will crash on launch.
+    # THe current code just writes a dummy for compilation.
+    - name: Create Amplify configuration
+      run: |
+        mkdir -p amplify-android/app/src/main/res/raw
+        echo '{"info":"To be replaced with Amplify configuration"}' > amplify-android/app/src/main/res/raw/amplify_outputs.json
+    
+    - name: Build Release APK
+      working-directory: ./amplify-android
+      run: ./gradlew assembleRelease --no-daemon --stacktrace
+    
+    - name: Upload Release APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: amplify-android/app/build/outputs/apk/release/app-release*.apk
+        retention-days: 30
